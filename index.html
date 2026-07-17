@@ -36,7 +36,7 @@
 <body>
 <div id="rotateHint">📱 スマホを横向きにすると画面が大きくなって遊びやすいよ!</div>
 <div id="wrap">
-  <canvas id="game" width="960" height="750"></canvas>
+  <canvas id="game" width="960" height="950"></canvas>
 
   <div id="ui">
     <div id="hearts"></div>
@@ -49,7 +49,10 @@
       <div class="padBtn" id="leftBtn">◀</div>
       <div class="padBtn" id="rightBtn">▶</div>
     </div>
-    <div class="padBtn" id="jumpBtn">ジャンプ</div>
+    <div id="actionBtns" style="display:flex; gap:10px;">
+      <div class="padBtn" id="fireBtn" style="background:rgba(255,87,34,0.4); border-color:rgba(255,138,101,0.8);">🔥</div>
+      <div class="padBtn" id="jumpBtn">ジャンプ</div>
+    </div>
   </div>
 
   <div class="screen" id="startScreen">
@@ -89,11 +92,11 @@
   ctx.imageSmoothingEnabled = false;
   ctx.webkitImageSmoothingEnabled = false;
   ctx.mozImageSmoothingEnabled = false;
-  const GW = 960, GH = 750;
+  const GW = 960, GH = 950;
   const ZOOM = 3.2;
   const VW = GW/ZOOM, VH = GH/ZOOM;
   const GROUND_Y = 320;
-  const CAM_Y = GROUND_Y - (VH - 5);
+  const CAM_Y = GROUND_Y - (VH - 65);
   const GRAVITY = 0.6;
   const JUMP_V = -11.5;
   const MOVE_SPEED = 3.4;
@@ -193,9 +196,10 @@
     {
       name:'ステージ1: 倉庫の中', width:2400,
       pits:[[560,660],[1300,1400]],
+      underground:[{start:1050,end:1180,depth:45}],
       platforms:[{x:280,y:165,w:110,h:18},{x:820,y:145,w:110,h:18},{x:1550,y:175,w:120,h:18},{x:1900,y:135,w:110,h:18}],
       enemies:[{x:480,y:0,range:70},{x:900,y:0,range:60},{x:1600,y:0,range:80},{x:2050,y:0,range:60}],
-      coins:[{x:300,y:155},{x:340,y:155},{x:830,y:135},{x:870,y:135},{x:1560,y:165},{x:1910,y:125},{x:2200,y:280}],
+      coins:[{x:300,y:155},{x:340,y:155},{x:830,y:135},{x:870,y:135},{x:1560,y:165},{x:1910,y:125},{x:2200,y:280},{x:1080,y:345},{x:1115,y:345},{x:1150,y:345}],
       blocks:[{x:200,y:130},{x:750,y:105},{x:1450,y:130}],
       barrels:[{x:780},{x:1750}],
       flagX:2340
@@ -203,19 +207,21 @@
     {
       name:'ステージ2: スクラップヤード', width:3200,
       pits:[[420,520],[900,1000],[1650,1780],[2300,2400]],
+      underground:[{start:1170,end:1320,depth:45}],
       platforms:[{x:250,y:155,w:100,h:18},{x:600,y:135,w:100,h:18},{x:1050,y:165,w:120,h:18},{x:1400,y:145,w:100,h:18},{x:1830,y:175,w:120,h:18},{x:2150,y:135,w:100,h:18},{x:2500,y:155,w:120,h:18},{x:2800,y:125,w:100,h:18}],
       enemies:[{x:350,y:0,range:60},{x:700,y:0,range:70},{x:1100,y:0,range:60},{x:1500,y:0,range:80},{x:1900,y:0,range:60},{x:2250,y:0,range:70},{x:2600,y:0,range:60},{x:2900,y:0,range:70}],
-      coins:[{x:260,y:145},{x:610,y:125},{x:1060,y:155},{x:1410,y:135},{x:1840,y:165},{x:2160,y:125},{x:2510,y:145},{x:2810,y:115},{x:3050,y:280}],
+      coins:[{x:260,y:145},{x:610,y:125},{x:1060,y:155},{x:1410,y:135},{x:1840,y:165},{x:2160,y:125},{x:2510,y:145},{x:2810,y:115},{x:3050,y:280},{x:1195,y:345},{x:1230,y:345},{x:1265,y:345}],
       blocks:[{x:150,y:120},{x:800,y:105},{x:1500,y:130},{x:2200,y:105}],
-      barrels:[{x:650},{x:1300},{x:2650}],
+      barrels:[{x:650},{x:1340},{x:2650}],
       flagX:3140
     },
     {
       name:'ステージ3: 配送ルート', width:4000,
       pits:[[380,470],[820,930],[1350,1460],[1900,2020],[2500,2600],[3100,3220]],
+      underground:[{start:2190,end:2320,depth:45}],
       platforms:[{x:220,y:145,w:100,h:18},{x:560,y:125,w:100,h:18},{x:980,y:165,w:110,h:18},{x:1250,y:135,w:100,h:18},{x:1520,y:115,w:100,h:18},{x:1750,y:155,w:110,h:18},{x:2080,y:135,w:100,h:18},{x:2350,y:105,w:100,h:18},{x:2650,y:145,w:120,h:18},{x:2950,y:125,w:100,h:18},{x:3280,y:155,w:120,h:18},{x:3600,y:125,w:110,h:18}],
       enemies:[{x:300,y:0,range:60},{x:620,y:0,range:70},{x:1000,y:0,range:60},{x:1300,y:0,range:70},{x:1560,y:0,range:60},{x:1800,y:0,range:80},{x:2120,y:0,range:60},{x:2400,y:0,range:70},{x:2700,y:0,range:60},{x:3000,y:0,range:80},{x:3330,y:0,range:60},{x:3650,y:0,range:70},{x:3850,y:0,range:60}],
-      coins:[{x:230,y:135},{x:570,y:115},{x:990,y:155},{x:1260,y:125},{x:1530,y:105},{x:1760,y:145},{x:2090,y:125},{x:2360,y:95},{x:2660,y:135},{x:2960,y:115},{x:3290,y:145},{x:3610,y:115},{x:3800,y:280}],
+      coins:[{x:230,y:135},{x:570,y:115},{x:990,y:155},{x:1260,y:125},{x:1530,y:105},{x:1760,y:145},{x:2090,y:125},{x:2360,y:95},{x:2660,y:135},{x:2960,y:115},{x:3290,y:145},{x:3610,y:115},{x:3800,y:280},{x:2230,y:345},{x:2265,y:345},{x:2300,y:345}],
       blocks:[{x:150,y:105},{x:620,y:120},{x:1700,y:105},{x:2350,y:120},{x:3300,y:105}],
       barrels:[{x:750},{x:1600},{x:2450},{x:3400}],
       flagX:3960
@@ -230,6 +236,7 @@
   let state = 'start';
   let keys = {left:false,right:false,jump:false};
 
+  const BASE_PLAYER_W = 56, BASE_PLAYER_H = 78;
   let player = {};
 
   function loadLevel(idx){
@@ -238,8 +245,9 @@
     level.coins.forEach(c=>{ c.got=false; c.w=26; c.h=26; });
     level.blocks.forEach(b=>{ b.used=false; b.removed=false; b.vanish=0; b.w=56; b.h=56; b.bump=0; });
     level.sparkles = [];
+    level.fireballs = [];
     level.barrels.forEach(b=>{ b.w=42; b.h=58; b.y = GROUND_Y - 58; });
-    player = { x:70, y:GROUND_Y-78, w:56, h:78, vx:0, vy:0, onGround:false, dir:1, invincible:0, animT:0,
+    player = { x:70, y:GROUND_Y-BASE_PLAYER_H, w:BASE_PLAYER_W, h:BASE_PLAYER_H, vx:0, vy:0, onGround:false, dir:1, invincible:0, animT:0, powered:false, fireCooldown:0,
                img: workerImgs[Math.floor(Math.random()*workerImgs.length)] };
     cameraX = 0;
     document.getElementById('levelName').textContent = level.name;
@@ -250,8 +258,19 @@
     return false;
   }
 
+  function groundYAt(cx){
+    if(level.underground){
+      for(const u of level.underground){
+        if(cx>=u.start && cx<=u.end) return GROUND_Y + u.depth;
+      }
+    }
+    return GROUND_Y;
+  }
+
   function resetPlayerPosition(){
-    player.x = 70; player.y = GROUND_Y-78; player.vx=0; player.vy=0;
+    player.x = 70; player.y = GROUND_Y-BASE_PLAYER_H; player.vx=0; player.vy=0;
+    player.w = BASE_PLAYER_W; player.h = BASE_PLAYER_H;
+    player.powered = false;
     cameraX = 0;
   }
 
@@ -303,18 +322,52 @@
   // ---------- 入力 ----------
   function bindHold(el, onDown, onUp){
     let active = false;
-    const down = e=>{ if(e && e.preventDefault) e.preventDefault(); if(active) return; active=true; el.classList.add('active'); onDown(); };
-    const up = e=>{ if(!active) return; active=false; el.classList.remove('active'); onUp(); };
+    let pid = null;
+    const down = e=>{
+      if(e && e.preventDefault) e.preventDefault();
+      if(active) return;
+      active = true;
+      pid = (e && e.pointerId!==undefined) ? e.pointerId : null;
+      if(pid!==null && el.setPointerCapture){
+        try{ el.setPointerCapture(pid); }catch(err){}
+      }
+      el.classList.add('active');
+      onDown();
+    };
+    const up = e=>{
+      if(!active) return;
+      if(e && e.pointerId!==undefined && pid!==null && e.pointerId!==pid) return;
+      active = false; pid = null;
+      el.classList.remove('active');
+      onUp();
+    };
     el.addEventListener('pointerdown', down);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    // フォールバック: ポインターキャプチャ非対応環境向け
     el.addEventListener('touchstart', down, {passive:false});
-    el.addEventListener('mousedown', down);
-    ['pointerup','pointerleave','pointercancel','touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>{
-      el.addEventListener(ev, up);
-    });
+    el.addEventListener('touchend', up);
+    el.addEventListener('touchcancel', up);
+    // アプリ切り替えやスクロールで指の状態が失われた時の保険
+    window.addEventListener('blur', up);
+    document.addEventListener('visibilitychange', ()=>{ if(document.hidden) up(); });
   }
   bindHold(document.getElementById('leftBtn'), ()=>keys.left=true, ()=>keys.left=false);
   bindHold(document.getElementById('rightBtn'), ()=>keys.right=true, ()=>keys.right=false);
   bindHold(document.getElementById('jumpBtn'), ()=>keys.jump=true, ()=>keys.jump=false);
+
+  function shootFireball(){
+    if(!level || state!=='playing') return;
+    if(!player.powered) return;
+    if(player.fireCooldown>0) return;
+    player.fireCooldown = 22;
+    const fx = player.dir>0 ? player.x+player.w : player.x-16;
+    level.fireballs.push({ x:fx, y:player.y+player.h*0.45, vx: player.dir*6.5, vy:-2, w:16, h:16, life:0 });
+    sfx.bump();
+  }
+  const fireBtnEl = document.getElementById('fireBtn');
+  fireBtnEl.addEventListener('pointerdown', e=>{ e.preventDefault(); shootFireball(); });
+  fireBtnEl.addEventListener('touchstart', e=>{ e.preventDefault(); shootFireball(); }, {passive:false});
 
   window.addEventListener('keydown', e=>{
     if(e.code==='ArrowLeft') keys.left=true;
@@ -359,6 +412,7 @@
     if(state!=='playing') return;
 
     if(player.invincible>0) player.invincible--;
+    if(player.fireCooldown>0) player.fireCooldown--;
 
     player.vx = 0;
     if(keys.left){ player.vx=-MOVE_SPEED; player.dir=-1; }
@@ -382,8 +436,9 @@
     const footX = player.x + player.w/2;
     player.onGround = false;
     if(!isPit(footX)){
-      if(player.y + player.h >= GROUND_Y){
-        player.y = GROUND_Y - player.h;
+      const gY = groundYAt(footX);
+      if(player.y + player.h >= gY){
+        player.y = gY - player.h;
         player.vy = 0;
         player.onGround = true;
       }
@@ -455,12 +510,30 @@
             do{ next = workerImgs[Math.floor(Math.random()*workerImgs.length)]; } while(next===player.img);
             player.img = next;
           }
+          if(!player.powered){
+            player.powered = true;
+            const oldH = player.h;
+            player.w = Math.round(BASE_PLAYER_W*1.35);
+            player.h = Math.round(BASE_PLAYER_H*1.35);
+            player.y -= (player.h - oldH);
+            sfx.clear();
+          }
         } else if(player.invincible<=0){
-          sfx.hurt();
-          player.vx = (player.x < e.x)? -4:4;
-          player.x += player.vx*3;
-          loseLife();
-          return;
+          if(player.powered){
+            sfx.hurt();
+            const oldH = player.h;
+            player.powered = false;
+            player.w = BASE_PLAYER_W;
+            player.h = BASE_PLAYER_H;
+            player.y += (oldH - player.h);
+            player.invincible = 90;
+          } else {
+            sfx.hurt();
+            player.vx = (player.x < e.x)? -4:4;
+            player.x += player.vx*3;
+            loseLife();
+            return;
+          }
         }
       }
     }
@@ -500,6 +573,30 @@
       level.sparkles = level.sparkles.filter(s=>s.life<s.maxLife);
     }
 
+    if(level.fireballs && level.fireballs.length){
+      for(const f of level.fireballs){
+        f.life++;
+        f.x += f.vx;
+        f.vy += 0.5;
+        f.y += f.vy;
+        if(f.y+f.h >= GROUND_Y && !isPit(f.x+f.w/2)){
+          f.y = GROUND_Y - f.h;
+          f.vy = -7;
+        }
+        for(const e of level.enemies){
+          if(!e.alive) continue;
+          if(f.x < e.x+e.w && f.x+f.w > e.x && f.y < e.y+e.h && f.y+f.h > e.y){
+            e.alive = false;
+            f.dead = true;
+            score += 50;
+            sfx.stomp();
+            updateUI();
+          }
+        }
+      }
+      level.fireballs = level.fireballs.filter(f=>!f.dead && f.life<150 && f.x>cameraX-50 && f.x<cameraX+VW+50);
+    }
+
     if(player.x + player.w >= level.flagX){
       state='clear';
       sfx.clear();
@@ -523,7 +620,7 @@
     if(player.invincible>0 && Math.floor(player.invincible/6)%2===0) ctx.globalAlpha=0.4;
     const bob = player.onGround ? Math.abs(Math.sin(player.animT))*2 : 0;
     const img = player.img;
-    const dw = 84, dh = 112;
+    const dw = player.w*1.5, dh = player.h*1.436;
     if(img && img.complete && img.naturalWidth>0){
       if(player.dir<0){
         ctx.translate(player.w/2, 0);
@@ -565,6 +662,19 @@
       ctx.drawImage(coinImg, c.x-cameraX, c.y, c.w, c.h);
     }
     ctx.restore();
+  }
+
+  function drawFireballs(){
+    if(!level.fireballs) return;
+    for(const f of level.fireballs){
+      ctx.save();
+      const cx = f.x-cameraX+f.w/2, cy = f.y+f.h/2;
+      ctx.fillStyle = '#ff5722';
+      ctx.beginPath(); ctx.arc(cx, cy, f.w/2, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ffca28';
+      ctx.beginPath(); ctx.arc(cx, cy, f.w/2*0.55, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
   }
 
   function drawSparkles(){
@@ -666,20 +776,34 @@
     ctx.translate(0,-CAM_Y);
     drawSky();
 
-    // 地面(通行可能な部分)
+    // 地面(通行可能な部分) - ピットと地下エリアの入口は地面を途切れさせる
     ctx.fillStyle = '#8d6e63';
+    const gaps = level.pits.map(p=>[p[0],p[1]])
+      .concat((level.underground||[]).map(u=>[u.start,u.end]))
+      .sort((a,b)=>a[0]-b[0]);
     let segStart = 0;
-    const sortedPits = level.pits.slice().sort((a,b)=>a[0]-b[0]);
-    for(const p of sortedPits){
-      ctx.fillRect(segStart-cameraX, GROUND_Y, (p[0]-segStart), GH-GROUND_Y);
-      segStart = p[1];
+    for(const g of gaps){
+      ctx.fillRect(segStart-cameraX, GROUND_Y, (g[0]-segStart), GH-GROUND_Y);
+      segStart = g[1];
     }
     ctx.fillRect(segStart-cameraX, GROUND_Y, (level.width-segStart), GH-GROUND_Y);
 
-    // 穴(ピット)
+    // 穴(ピット、底なし)
     ctx.fillStyle = '#1a1a1a';
     for(const p of level.pits){
       ctx.fillRect(p[0]-cameraX, GROUND_Y, p[1]-p[0], GH-GROUND_Y);
+    }
+
+    // 地下エリア(コインが取れるくぼみ)
+    if(level.underground){
+      for(const u of level.underground){
+        const floorY = GROUND_Y + u.depth;
+        ctx.fillStyle = '#5d4037';
+        ctx.fillRect(u.start-cameraX, floorY, (u.end-u.start), GH-floorY);
+        ctx.fillStyle = '#3e2723';
+        ctx.fillRect(u.start-cameraX, GROUND_Y, 10, u.depth);
+        ctx.fillRect(u.end-10-cameraX, GROUND_Y, 10, u.depth);
+      }
     }
 
     for(const p of level.platforms){
@@ -691,6 +815,7 @@
 
     level.coins.forEach(drawCoin);
     level.enemies.forEach(drawEnemy);
+    drawFireballs();
     drawPlayer();
     drawSparkles();
     ctx.restore();

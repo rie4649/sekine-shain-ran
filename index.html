@@ -237,6 +237,7 @@
     level.enemies.forEach(e=>{ e.baseX=e.x; e.dir=1; e.alive=true; e.y = GROUND_Y - 36; e.w=36; e.h=36; });
     level.coins.forEach(c=>{ c.got=false; c.w=26; c.h=26; });
     level.blocks.forEach(b=>{ b.used=false; b.removed=false; b.vanish=0; b.w=56; b.h=56; b.bump=0; });
+    level.sparkles = [];
     level.barrels.forEach(b=>{ b.w=42; b.h=58; b.y = GROUND_Y - 58; });
     player = { x:70, y:GROUND_Y-78, w:56, h:78, vx:0, vy:0, onGround:false, dir:1, invincible:0, animT:0,
                img: workerImgs[Math.floor(Math.random()*workerImgs.length)] };
@@ -252,6 +253,20 @@
   function resetPlayerPosition(){
     player.x = 70; player.y = GROUND_Y-78; player.vx=0; player.vy=0;
     cameraX = 0;
+  }
+
+  function spawnSparkles(x, y){
+    if(!level.sparkles) level.sparkles = [];
+    for(let i=0;i<7;i++){
+      const angle = (Math.PI*2/7)*i + Math.random()*0.5;
+      const speed = 1.2 + Math.random()*1.5;
+      level.sparkles.push({
+        x, y,
+        vx: Math.cos(angle)*speed,
+        vy: Math.sin(angle)*speed - 1,
+        life: 0, maxLife: 22 + Math.floor(Math.random()*6)
+      });
+    }
   }
 
   function loseLife(){
@@ -450,17 +465,14 @@
       }
     }
 
-    // ドラム缶(土管のような障害物、踏めない・避けるしかない)
+    // ドラム缶(上に乗れる足場)
     for(const d of level.barrels){
-      if(player.x < d.x+d.w && player.x+player.w > d.x &&
-         player.y < d.y+d.h && player.y+player.h > d.y){
-        if(player.invincible<=0){
-          sfx.hurt();
-          player.vx = (player.x < d.x)? -4:4;
-          player.x += player.vx*3;
-          loseLife();
-          return;
-        }
+      if(player.vy>=0 &&
+         player.x+player.w>d.x && player.x<d.x+d.w &&
+         player.y+player.h>=d.y && player.y+player.h<=d.y+d.h+player.vy+1){
+        player.y = d.y - player.h;
+        player.vy = 0;
+        player.onGround = true;
       }
     }
 
@@ -477,7 +489,15 @@
         score += 10;
         sfx.coin();
         updateUI();
+        spawnSparkles(c.x+c.w/2, c.y+c.h/2);
       }
+    }
+
+    if(level.sparkles && level.sparkles.length){
+      for(const s of level.sparkles){
+        s.x += s.vx; s.y += s.vy; s.vy += 0.15; s.life++;
+      }
+      level.sparkles = level.sparkles.filter(s=>s.life<s.maxLife);
     }
 
     if(player.x + player.w >= level.flagX){
@@ -545,6 +565,30 @@
       ctx.drawImage(coinImg, c.x-cameraX, c.y, c.w, c.h);
     }
     ctx.restore();
+  }
+
+  function drawSparkles(){
+    if(!level.sparkles) return;
+    for(const s of level.sparkles){
+      const t = s.life / s.maxLife;
+      const alpha = Math.max(0, 1 - t);
+      const size = 5 + (1-t)*4;
+      const sx = s.x - cameraX, sy = s.y;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#fff59d';
+      ctx.strokeStyle = '#fff9c4';
+      ctx.translate(sx, sy);
+      ctx.rotate(t*Math.PI);
+      ctx.beginPath();
+      ctx.moveTo(0,-size); ctx.lineTo(size*0.28,-size*0.28);
+      ctx.lineTo(size,0); ctx.lineTo(size*0.28,size*0.28);
+      ctx.lineTo(0,size); ctx.lineTo(-size*0.28,size*0.28);
+      ctx.lineTo(-size,0); ctx.lineTo(-size*0.28,-size*0.28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
   }
 
   function drawBlock(b){
@@ -648,6 +692,7 @@
     level.coins.forEach(drawCoin);
     level.enemies.forEach(drawEnemy);
     drawPlayer();
+    drawSparkles();
     ctx.restore();
   }
 
